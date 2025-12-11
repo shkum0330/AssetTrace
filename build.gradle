@@ -10,11 +10,18 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
+}
+
+// 한글 깨짐 방지
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

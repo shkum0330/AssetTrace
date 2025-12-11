@@ -1,0 +1,6 @@
+{
+ node F0, F1, F2, F3, F4, F5
+ node U0, U1, U2, U3
+ link U0-F1, U1-F2, U2-F4, U3-F0
+ link F0-F1, F2-F1, F2-F4, F3-F4, F4-F0, F4-F1, F3-F1, F2-F5, F4-F5
+}
