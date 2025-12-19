@@ -4,15 +4,17 @@ import assettrace.core.Block;
 import assettrace.core.Transaction;
 import assettrace.network.Message;
 import assettrace.network.NetworkConfig;
-import assettrace.network.NodeClient;
 import assettrace.network.NodeServer;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static assettrace.network.Message.Type.TRANSACTION;
+
 public class FullNode {
     private String nodeId;   // 예: F0
-    private int port;        // 예: 5000
+    private int port;        // 예: 9000
 
     // 블록체인 저장소 (Ledger)
     private List<Block> blockchain = new ArrayList<>();
@@ -24,8 +26,8 @@ public class FullNode {
         this.nodeId = nodeId;
         this.port = NetworkConfig.getPort(nodeId);
 
-        // 1. 제네시스 블록 초기화 (Block 0)
-        // 명세서에 따라 모든 노드는 시작 시 동일한 제네시스 블록을 가짐
+        // 제네시스 블록 초기화 (Block 0)
+        // 모든 노드는 시작 시 동일한 제네시스 블록을 가짐
         loadGenesisBlock();
     }
 
@@ -41,20 +43,49 @@ public class FullNode {
     }
 
     public void start() {
-        // 1. 서버 시작 (수신 대기)
-        NodeServer server = new NodeServer(port);
+        // 서버 시작 시 "handleMessage" 메서드를 콜백으로 전달
+        NodeServer server = new NodeServer(port, this::handleMessage);
         server.start();
 
-        // 2. 이웃 노드 확인 (topology.dat)
         List<String> neighbors = NetworkConfig.getNeighbors(nodeId);
         System.out.println("[" + nodeId + "] Neighbors: " + neighbors);
-
-        // TODO: 이웃들에게 연결 시도 및 블록 동기화 로직 추가
     }
 
-    // 이 노드를 단독 실행할 때 사용하는 진입점
+    // 메시지 수신 시 호출되는 메서드
+    private void handleMessage(Message msg) {
+        switch (msg.getType()) {
+            case TRANSACTION:
+                handleTransaction(msg);
+                break;
+            // 추후 BLOCK, REQ_CHAIN 등 추가
+            default:
+                System.out.println("Unknown message type: " + msg.getType());
+        }
+    }
+
+    private void handleTransaction(Message msg) {
+        // Gson으로 인해 Object가 LinkedTreeMap으로 변환되었을 수 있으므로 다시 변환
+        Gson gson = new Gson();
+        String json = gson.toJson(msg.getData());
+        Transaction tx = gson.fromJson(json, Transaction.class);
+
+        // 1. 검증 (Valid Check) [cite: 20]
+        if (isValid(tx)) {
+            txPool.add(tx);
+            System.out.println("[" + nodeId + "] Tx Verified & Added to Pool. Pool Size: " + txPool.size());
+            // TODO: 이웃 노드에게 전파(Flooding) 로직 추
+        } else {
+            System.out.println("[" + nodeId + "] Tx Invalid! Discarded.");
+        }
+    }
+
+    private boolean isValid(Transaction tx) {
+        // TODO: 실제 서명 검증 로직 구현 필요 (현재는 무조건 true)
+        // CryptoUtil.verifyECDSASig(...)
+        return true;
+    }
+
     public static void main(String[] args) {
-        // 인자가 없으면 기본값 F0으로 테스트
         String id = (args.length > 0) ? args[0] : "F0";
         new FullNode(id).start();
     }
