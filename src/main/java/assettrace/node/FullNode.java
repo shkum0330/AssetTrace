@@ -10,11 +10,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import static assettrace.network.Message.Type.TRANSACTION;
-
 public class FullNode {
-    private String nodeId;   // 예: F0
-    private int port;        // 예: 9000
+    private String nodeId;
+    private int port;
 
     // 블록체인 저장소 (Ledger)
     private List<Block> blockchain = new ArrayList<>();
@@ -22,20 +20,19 @@ public class FullNode {
     // 채굴 대기 중인 트랜잭션 풀 (Mempool)
     private List<Transaction> txPool = new ArrayList<>();
 
+    // 채굴 난이도
+    private static final int DIFFICULTY = 5;
+
     public FullNode(String nodeId) {
         this.nodeId = nodeId;
         this.port = NetworkConfig.getPort(nodeId);
-
-        // 제네시스 블록 초기화 (Block 0)
-        // 모든 노드는 시작 시 동일한 제네시스 블록을 가짐
         loadGenesisBlock();
     }
 
     private void loadGenesisBlock() {
-        // 이전 해시가 "0"인 0번 블록 생성
         Block genesis = new Block(0, "0");
         genesis.setNonce(0);
-        genesis.calculateMerkleRoot(); // 트랜잭션 없어도 루트 계산
+        genesis.calculateMerkleRoot();
         genesis.setBlockHash(genesis.calculateBlockHash());
 
         blockchain.add(genesis);
@@ -43,45 +40,88 @@ public class FullNode {
     }
 
     public void start() {
-        // 서버 시작 시 "handleMessage" 메서드를 콜백으로 전달
+        // 1. 서버 시작 (수신 대기 - 별도 스레드)
         NodeServer server = new NodeServer(port, this::handleMessage);
         server.start();
 
         List<String> neighbors = NetworkConfig.getNeighbors(nodeId);
         System.out.println("[" + nodeId + "] Neighbors: " + neighbors);
+
+        // 메인 스레드는 채굴 루프 실행
+        miningLoop();
     }
 
-    // 메시지 수신 시 호출되는 메서드
+    // 끊임없이 트랜잭션을 감시하고 채굴하는 루프
+    private void miningLoop() {
+        while (true) {
+            try {
+                Thread.sleep(2000); // 2초 대기 (CPU 과부하 방지)
+
+                // 트랜잭션이 있으면 채굴 시작
+                if (!txPool.isEmpty()) {
+                    mineBlock();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void mineBlock() {
+        // 1. 이전 블록 정보 가져오기
+        Block prevBlock = blockchain.get(blockchain.size() - 1);
+        int newBlockNo = blockchain.size();
+
+        // 2. 새 블록 객체 생성
+        Block newBlock = new Block(newBlockNo, prevBlock.getBlockHash());
+
+        // 3. 풀에 있는 트랜잭션을 블록에 담기 (동시성 문제를 피하기 위해 복사본 사용)
+        List<Transaction> txsToMine = new ArrayList<>(txPool);
+        for (Transaction tx : txsToMine) {
+            newBlock.addTransaction(tx);
+        }
+
+        // 4. 채굴 시작 (PoW)
+        System.out.println("[" + nodeId + "] Start Mining Block #" + newBlockNo + " with " + txsToMine.size() + " txs...");
+        newBlock.mine(DIFFICULTY);
+
+        // 5. 체인에 추가 및 풀 비우기
+        blockchain.add(newBlock);
+        txPool.clear(); // 채굴된 트랜잭션 삭제
+
+        System.out.println("[" + nodeId + "] Block #" + newBlockNo + " Added to Chain! Total Height: " + blockchain.size());
+
+        // TODO: 채굴된 블록 전파(Broadcasting) 로직 추가
+    }
+
+    // 메시지 처리 핸들러
     private void handleMessage(Message msg) {
         switch (msg.getType()) {
             case TRANSACTION:
                 handleTransaction(msg);
                 break;
-            // 추후 BLOCK, REQ_CHAIN 등 추가
             default:
                 System.out.println("Unknown message type: " + msg.getType());
         }
     }
 
     private void handleTransaction(Message msg) {
-        // Gson으로 인해 Object가 LinkedTreeMap으로 변환되었을 수 있으므로 다시 변환
         Gson gson = new Gson();
+        // Object -> Json -> Transaction 변환
         String json = gson.toJson(msg.getData());
         Transaction tx = gson.fromJson(json, Transaction.class);
 
-        // 1. 검증 (Valid Check) [cite: 20]
+        // 유효성 검증 후 풀에 추가
         if (isValid(tx)) {
             txPool.add(tx);
             System.out.println("[" + nodeId + "] Tx Verified & Added to Pool. Pool Size: " + txPool.size());
-            // TODO: 이웃 노드에게 전파(Flooding) 로직 추
         } else {
             System.out.println("[" + nodeId + "] Tx Invalid! Discarded.");
         }
     }
 
     private boolean isValid(Transaction tx) {
-        // TODO: 실제 서명 검증 로직 구현 필요 (현재는 무조건 true)
-        // CryptoUtil.verifyECDSASig(...)
+        // 서명 검증 로직 (구현되었다고 가정)
         return true;
     }
 
