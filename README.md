@@ -4,7 +4,7 @@
 * Java로 구현한 **P2P 기반의 자산 추적 블록체인 시스템**
 * 외부 블록체인 프레임워크 없이, **P2P 네트워크 통신, 합의 알고리즘(PoW), 암호화 서명(ECDSA), 블록 및 트랜잭션 구조**를 설계하고 구현하여 블록체인의 핵심 원리를 시뮬레이션
 
-
+<br/>
 
 ## 🚀 Key Features
 * **Core Blockchain Structure**: 블록 헤더/바디, 머클 루트, 체인 연결 구조 구현
@@ -14,13 +14,13 @@
 * **SHA-256**: 블록 해시 및 머클 트리 계산
 * **ECDSA (secp256k1)**: 트랜잭션 전자 서명 및 검증 (BouncyCastle 라이브러리 활용)
 
-
+<br/>
 
 * **Node Architecture**:
 * **Full Node**: 트랜잭션 수집, 검증, 블록 채굴, 원장 관리
 * **User Node**: 지갑 생성, 트랜잭션 생성 및 서명, 전파
 
-
+<br/>
 
 ## 🛠 Tech Stack
 * **Language**: Java
@@ -29,7 +29,7 @@
 * `Gson`: JSON 직렬화/역직렬화 (네트워크 메시지 통신용)
 * `BouncyCastle`: 암호화 알고리즘 (ECDSA) provider
 
-
+<br/>
 
 ## 📂 Project Structure
 ```bash
@@ -44,7 +44,8 @@ src/main/java/assettrace
 네트워크 연결 정보는 프로젝트 루트의 `topology.dat` 파일에 정의되어 있음
 * **Full Node (Fx)**: `9000`번대 포트 사용 (예: F0 -> 9000, F1 -> 9001)
 * **User Node (Ux)**: `8000`번대 포트 사용 (예: U0 -> 8000)
-
+* 
+<br/>
 
 ## 🏃 How to Run
 ### 1. Build
@@ -71,7 +72,7 @@ U0 노드를 실행하면 자동으로 F1에 접속하여 트랜잭션을 생성
 ./gradlew run --args="U0"
 
 ```
-
+<br/>
 
 ### 3. Execution Flow (Logs)
 정상적으로 실행되면 아래와 같은 로그 흐름을 볼 수 있음
