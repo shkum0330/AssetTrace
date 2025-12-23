@@ -40,6 +40,8 @@ src/main/java/assettrace
 └── util          # 암호화 유틸리티 (CryptoUtil: SHA-256, ECDSA)
 ```
 
+<br/>
+
 ## ⚙️ Configuration & Topology
 네트워크 연결 정보는 프로젝트 루트의 `topology.dat` 파일에 정의되어 있음
 * **Full Node (Fx)**: `9000`번대 포트 사용 (예: F0 -> 9000, F1 -> 9001)
