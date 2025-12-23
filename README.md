@@ -10,15 +10,15 @@
 * **Core Blockchain Structure**: 블록 헤더/바디, 머클 루트, 체인 연결 구조 구현
 * **Proof of Work (PoW)**: 난이도(Difficulty) 기반의 작업 증명 마이닝 알고리즘 구현
 * **P2P Network**: Java Socket을 이용한 노드 간 양방향 통신 및 메시지 브로드캐스팅
-* **Security & Crypto**:
-* **SHA-256**: 블록 해시 및 머클 트리 계산
-* **ECDSA (secp256k1)**: 트랜잭션 전자 서명 및 검증 (BouncyCastle 라이브러리 활용)
+* **Security & Crypto**
+  * **SHA-256**: 블록 해시 및 머클 트리 계산
+  * **ECDSA (secp256k1)**: 트랜잭션 전자 서명 및 검증 (BouncyCastle 라이브러리 활용)
 
 <br/>
 
-* **Node Architecture**:
-* **Full Node**: 트랜잭션 수집, 검증, 블록 채굴, 원장 관리
-* **User Node**: 지갑 생성, 트랜잭션 생성 및 서명, 전파
+* **Node Architecture**
+  * **Full Node**: 트랜잭션 수집, 검증, 블록 채굴, 원장 관리
+  * **User Node**: 지갑 생성, 트랜잭션 생성 및 서명, 전파
 
 <br/>
 
