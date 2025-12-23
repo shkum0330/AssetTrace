@@ -44,7 +44,7 @@ src/main/java/assettrace
 네트워크 연결 정보는 프로젝트 루트의 `topology.dat` 파일에 정의되어 있음
 * **Full Node (Fx)**: `9000`번대 포트 사용 (예: F0 -> 9000, F1 -> 9001)
 * **User Node (Ux)**: `8000`번대 포트 사용 (예: U0 -> 8000)
-* 
+
 <br/>
 
 ## 🏃 How to Run
@@ -72,7 +72,6 @@ U0 노드를 실행하면 자동으로 F1에 접속하여 트랜잭션을 생성
 ./gradlew run --args="U0"
 
 ```
-<br/>
 
 ### 3. Execution Flow (Logs)
 정상적으로 실행되면 아래와 같은 로그 흐름을 볼 수 있음
@@ -82,7 +81,7 @@ U0 노드를 실행하면 자동으로 F1에 접속하여 트랜잭션을 생성
 4. **[F1]** 블록 생성 성공 (**Block Mined!**) -> 체인 연결
 5. **[F1]** 이웃 노드들에게 블록 전파 (Broadcasting)
 
-
+<br/>
 
 ## 📝 Implementation Steps
 * **Step 1**: 기본 데이터 구조 설계 (Block, Transaction, SHA-256)
