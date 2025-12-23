@@ -1,12 +1,12 @@
-# 📦 AssetTrace: P2P Blockchain Asset Tracking System
+# AssetTrace: P2P Blockchain Asset Tracking System
 
-## 🚀 Overview
+## Overview
 * Java로 구현한 **P2P 기반의 자산 추적 블록체인 시스템**
 * 외부 블록체인 프레임워크 없이, **P2P 네트워크 통신, 합의 알고리즘(PoW), 암호화 서명(ECDSA), 블록 및 트랜잭션 구조**를 설계하고 구현하여 블록체인의 핵심 원리를 시뮬레이션
 
 <br/>
 
-## 🚀 Key Features
+## Key Features
 * **Core Blockchain Structure**: 블록 헤더/바디, 머클 루트, 체인 연결 구조 구현
 * **Proof of Work (PoW)**: 난이도(Difficulty) 기반의 작업 증명 마이닝 알고리즘 구현
 * **P2P Network**: Java Socket을 이용한 노드 간 양방향 통신 및 메시지 브로드캐스팅
@@ -19,7 +19,7 @@
 
 <br/>
 
-## 🛠 Tech Stack
+## Tech Stack
 * **Language**: Java
 * **Build Tool**: Gradle
 * **Library**:
@@ -28,7 +28,7 @@
 
 <br/>
 
-## 📂 Project Structure
+## Project Structure
 ```bash
 src/main/java/assettrace
 ├── core          # 핵심 데이터 구조 (Block, Transaction)
@@ -39,14 +39,14 @@ src/main/java/assettrace
 
 <br/>
 
-## ⚙️ Configuration & Topology
+## Configuration & Topology
 네트워크 연결 정보는 프로젝트 루트의 `topology.dat` 파일에 정의되어 있음
 * **Full Node (Fx)**: `9000`번대 포트 사용 (예: F0 -> 9000, F1 -> 9001)
 * **User Node (Ux)**: `8000`번대 포트 사용 (예: U0 -> 8000)
 
 <br/>
 
-## 🏃 How to Run
+## How to Run
 ### 1. Build
 ```bash
 ./gradlew build
@@ -82,7 +82,7 @@ U0 노드를 실행하면 자동으로 F1에 접속하여 트랜잭션을 생성
 
 <br/>
 
-## 📝 Implementation Steps
+## Implementation Steps
 * **Step 1**: 기본 데이터 구조 설계 (Block, Transaction, SHA-256)
 * **Step 2**: JSON 기반 P2P 네트워크 통신 프로토콜 구현
 * **Step 3**: 노드(Full/User) 서버 구동 및 `topology.dat` 파싱
