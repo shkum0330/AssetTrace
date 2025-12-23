@@ -13,9 +13,6 @@
 * **Security & Crypto**
   * **SHA-256**: 블록 해시 및 머클 트리 계산
   * **ECDSA (secp256k1)**: 트랜잭션 전자 서명 및 검증 (BouncyCastle 라이브러리 활용)
-
-<br/>
-
 * **Node Architecture**
   * **Full Node**: 트랜잭션 수집, 검증, 블록 채굴, 원장 관리
   * **User Node**: 지갑 생성, 트랜잭션 생성 및 서명, 전파
